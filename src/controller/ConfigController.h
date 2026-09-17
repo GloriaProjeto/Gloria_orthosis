@@ -1,27 +1,48 @@
-#ifdef CONFIG_CONTROLLER_H
+#ifndef CONFIG_CONTROLLER_H
 #define CONFIG_CONTROLLER_H
 
 #include <Arduino.h>
 #include <Preferences.h>
-#include "./model/ConfigModel.h"
+#include <WiFi.h>
+#include <WebServer.h>
+#include <PubSubClient.h>
+#include <WiFiClientSecure.h>
+#include "../model/ConfigModel.h"
 
 class ConfigController {
 private:
     Preferences preferences;
+
+    WiFiClientSecure wifiClient;
+    PubSubClient mqttClient;
+
+    WebServer server;
+
+    void startAccessPoint();
+    void setupWebServer();
+
+    void handleRoot();
+    void handleSaveWifi();
+
 public:
     bool begin();
+    
+    ConfigController();
 
     WifiConfig getWifiConfig();
-    MQTTConfig getMQTTConfig();
 
-    void saveWifiConfig(const String& ssid, const String& password);
-    void saveMQTTConfig(const String& host, int port, const String& username, const String& password);
+    void saveWifiConfig(
+        const String& ssid,
+        const String& password
+    );
 
     bool hasWifiConfig();
+
+    void update();
 
     bool connectWifi();
     bool connectMQTT();
     bool connect();
-}
+};
 
 #endif

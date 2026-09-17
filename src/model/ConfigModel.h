@@ -8,11 +8,11 @@ struct WifiConfig{
     String password;
 };
 
-struct MQTTConfig{
-    String host;
-    int port;
-    String username;
-    String password;
-};
+// struct MQTTConfig{
+//     String host;
+//     int port;
+//     String username;
+//     String password;
+// };
 
 #endif

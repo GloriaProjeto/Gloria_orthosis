@@ -33,7 +33,7 @@ void setup() {
     baseline = aController.getBaseline();
 
     configController.begin();
-    configController.config();
+    configController.connect();
   
 };
 
