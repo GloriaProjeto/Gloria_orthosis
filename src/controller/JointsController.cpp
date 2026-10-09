@@ -17,7 +17,7 @@ void JointsController::initialize(){
         delay(15);
     }
 
-    for (int i = joint2.getAngle(); i <= 180; i++){
+    for (int i = joint2.getAngle(); i >= 0; i--){
         joint2.setAngle(i);
         delay(15);
     }
@@ -81,13 +81,13 @@ void JointsController::eat(){
         }
     }
 
-    if(joint2.getAngle() < 180){
-        for (int i = joint2.getAngle(); i <= 180; i++){
+    if(joint2.getAngle() < 15){
+        for (int i = joint2.getAngle(); i <= 15; i++){
             joint2.setAngle(i);
             delay(15);
         }
-    }else if(joint2.getAngle() > 180){
-        for (int i = joint2.getAngle(); i >= 180; i--){
+    }else if(joint2.getAngle() > 15){
+        for (int i = joint2.getAngle(); i >= 15; i--){
             joint2.setAngle(i);
             delay(15);
         }
