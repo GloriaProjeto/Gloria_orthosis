@@ -45,7 +45,7 @@ public:
 
     void update();
 
-    bool publishBattery(float percentage);
+    bool publishBattery(int percentage);
     bool consumeCalibrationRequest();
 
     bool connectWifi();

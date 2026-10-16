@@ -7,4 +7,4 @@ class BatterySensor{
     public:
         void begin();
         int readBatteryPercentage();
-}
+};

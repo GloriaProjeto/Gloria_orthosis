@@ -7,7 +7,7 @@ void BatteryController::begin() {
 }
 
 void BatteryController::getBatteryPercentage() {
-    model.getPercentage.readBatteryPercentage(sensor.readBatteryPercentage());
+    model.setPercentage(sensor.readBatteryPercentage());
 
     view.showBatteryPercentage(model.getPercentage());
 
