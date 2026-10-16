@@ -4,9 +4,13 @@
 #include <WiFi.h>
 #include "../../SECRETS.h"
 
+ConfigController* ConfigController::callbackInstance = nullptr;
+
 bool ConfigController::begin() {
     wifiClient.setCACert(MQTT_ROOT_CA);
     mqttClient.setClient(wifiClient);
+    callbackInstance = this;
+    mqttClient.setCallback(mqttCallback);
     return true;
 }
 
@@ -148,6 +152,46 @@ void ConfigController::handleSaveWifi(){
 
 void ConfigController::update(){
     server.handleClient();
+
+    if (mqttClient.connected()) {
+        mqttClient.loop();
+        return;
+    }
+
+    if (WiFi.status() == WL_CONNECTED && millis() - lastMqttAttempt >= 5000) {
+        lastMqttAttempt = millis();
+        connectMQTT();
+    }
+}
+
+bool ConfigController::publishBattery(int percentage) {
+    if (!mqttClient.connected()) {
+        return false;
+    }
+
+    String topic = String(MQTT_USERNAME) + "/battery";
+    String payload = String(percentage, 1);
+    return mqttClient.publish(topic.c_str(), payload.c_str(), true);
+}
+
+bool ConfigController::consumeCalibrationRequest() {
+    bool requested = calibrationRequested;
+    calibrationRequested = false;
+    return requested;
+}
+
+void ConfigController::mqttCallback(char* topic, byte* payload, unsigned int length) {
+    (void) payload;
+    (void) length;
+
+    if (callbackInstance == nullptr || topic == nullptr) {
+        return;
+    }
+
+    String calibrationTopic = String(MQTT_USERNAME) + "/calibrate";
+    if (calibrationTopic.equals(topic)) {
+        callbackInstance->calibrationRequested = true;
+    }
 }
 
 bool ConfigController::hasWifiConfig() {
@@ -228,8 +272,21 @@ bool ConfigController::connectWifi(){
 bool ConfigController::connectMQTT() {
     mqttClient.setServer(MQTT_HOST, MQTT_PORT);
 
-    if(mqttClient.connect("gloria_esp00000001", MQTT_USERNAME, MQTT_PASSWORD)) {
+    String statusTopic = String(MQTT_USERNAME) + "/status";
+    String calibrationTopic = String(MQTT_USERNAME) + "/calibrate";
+
+    if(mqttClient.connect(
+        "gloria_esp00000001",
+        MQTT_USERNAME,
+        MQTT_PASSWORD,
+        statusTopic.c_str(),
+        1,
+        true,
+        "disconnected"
+    )) {
         Serial.println("Connected to MQTT broker.");
+        mqttClient.subscribe(calibrationTopic.c_str());
+        mqttClient.publish(statusTopic.c_str(), "connected", true);
         return true;
     } else {
         Serial.print("Failed to connect to MQTT broker. State: ");

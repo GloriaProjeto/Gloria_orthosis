@@ -5,11 +5,13 @@
 #include "./model/OrthosisStates.h"
 #include "./view/SerialView.h"
 #include "./controller/ConfigController.h"
+#include "./controller/BatteryController.h"
 
 LoadCellController lcController;
 JointsController jController;
 AccelerometerController aController;
 ConfigController configController;
+BatteryController batteryController;
 
 float baseline;
 float movement;
@@ -23,6 +25,11 @@ void setup() {
     Serial.begin(115200);
     SerialView::beginSerial();
 
+    configController.begin();
+    configController.connect();
+
+    batteryController.begin();
+
     jController.begin();
     jController.initialize();
 
@@ -31,13 +38,17 @@ void setup() {
     aController.begin();
 
     baseline = aController.getBaseline();
-
-    configController.begin();
-    configController.connect();
-  
 };
 
 void loop() {
+    configController.update();
+    batteryController.getBatteryPercentage();
+
+    if (configController.consumeCalibrationRequest()) {
+        baseline = aController.calibrate();
+        Serial.println("Accelerometer calibration complete.");
+    }
+
     delay(15);
 
     movement = aController.getAz() - baseline;

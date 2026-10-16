@@ -26,3 +26,7 @@ void SerialView::showAccelerometerConnection(bool connected){
 void SerialView::showAz(float az){
     writeLine(String("AZ: ") + String(az));
 };
+
+void SerialView::showBatteryPercentage(int percentage){
+    writeLine(String("Battery: ") + String(percentage) + "%");
+};

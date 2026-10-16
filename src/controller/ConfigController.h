@@ -16,6 +16,11 @@ private:
     WiFiClientSecure wifiClient;
     PubSubClient mqttClient;
 
+    static ConfigController* callbackInstance;
+    static void mqttCallback(char* topic, byte* payload, unsigned int length);
+    bool calibrationRequested = false;
+    unsigned long lastMqttAttempt = 0;
+
     WebServer server;
 
     void startAccessPoint();
@@ -39,6 +44,9 @@ public:
     bool hasWifiConfig();
 
     void update();
+
+    bool publishBattery(float percentage);
+    bool consumeCalibrationRequest();
 
     bool connectWifi();
     bool connectMQTT();

@@ -12,6 +12,7 @@ class AccelerometerController{
 
     public:
         void begin();
+        float calibrate();
         float getAz();
         float getBaseline(); 
 };

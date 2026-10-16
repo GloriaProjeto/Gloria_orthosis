@@ -5,7 +5,13 @@ void AccelerometerController::begin(){
 
     view.showAccelerometerConnection(sensor.testConnection());
 
-    model.setBaseline(sensor.calibrateSensor());
+    calibrate();
+};
+
+float AccelerometerController::calibrate(){
+    float baseline = sensor.calibrateSensor();
+    model.setBaseline(baseline);
+    return baseline;
 };
 
 float AccelerometerController::getAz(){

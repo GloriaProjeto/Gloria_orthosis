@@ -8,4 +8,5 @@ class SerialView{
         void showWeight(float weight);
         void showAccelerometerConnection(bool connected);
         void showAz(float az);   
+        void showBatteryPercentage(int percentage);
 };
