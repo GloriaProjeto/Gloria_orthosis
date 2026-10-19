@@ -160,6 +160,7 @@ void ConfigController::update(){
 
     if (WiFi.status() == WL_CONNECTED && millis() - lastMqttAttempt >= 5000) {
         lastMqttAttempt = millis();
+        mqttConnectionAttempted = true;
         connectMQTT();
     }
 }
@@ -178,6 +179,14 @@ bool ConfigController::consumeCalibrationRequest() {
     bool requested = calibrationRequested;
     calibrationRequested = false;
     return requested;
+}
+
+bool ConfigController::isMqttConnected(){
+    return mqttClient.connected();
+}
+
+bool ConfigController::hasAttemptedMqttConnection(){
+    return mqttConnectionAttempted;
 }
 
 void ConfigController::mqttCallback(char* topic, byte* payload, unsigned int length) {
@@ -270,6 +279,7 @@ bool ConfigController::connectWifi(){
 }
 
 bool ConfigController::connectMQTT() {
+    mqttConnectionAttempted = true;
     mqttClient.setServer(MQTT_HOST, MQTT_PORT);
 
     String statusTopic = String(MQTT_USERNAME) + "/status";

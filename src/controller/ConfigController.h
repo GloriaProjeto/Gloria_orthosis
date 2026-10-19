@@ -19,6 +19,7 @@ private:
     static ConfigController* callbackInstance;
     static void mqttCallback(char* topic, byte* payload, unsigned int length);
     bool calibrationRequested = false;
+    bool mqttConnectionAttempted = false;
     unsigned long lastMqttAttempt = 0;
 
     WebServer server;
@@ -47,6 +48,8 @@ public:
 
     bool publishBattery(int percentage);
     bool consumeCalibrationRequest();
+    bool isMqttConnected();
+    bool hasAttemptedMqttConnection();
 
     bool connectWifi();
     bool connectMQTT();

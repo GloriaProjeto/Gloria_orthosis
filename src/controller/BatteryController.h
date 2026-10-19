@@ -14,5 +14,5 @@ class BatteryController{
 
     public:
         void begin();
-        void getBatteryPercentage();
+        int getBatteryPercentage();
 };

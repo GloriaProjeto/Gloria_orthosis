@@ -6,12 +6,14 @@
 #include "./view/SerialView.h"
 #include "./controller/ConfigController.h"
 #include "./controller/BatteryController.h"
+#include "./controller/LedController.h"
 
 LoadCellController lcController;
 JointsController jController;
 AccelerometerController aController;
 ConfigController configController;
 BatteryController batteryController;
+LedController ledController;
 
 float baseline;
 float movement;
@@ -24,6 +26,8 @@ OrthosisStates lastState = OrthosisStates::IDLE;
 void setup() {
     Serial.begin(115200);
     SerialView::beginSerial();
+
+    ledController.setLed();
 
     configController.begin();
     configController.connect();
@@ -42,7 +46,28 @@ void setup() {
 
 void loop() {
     configController.update();
-    batteryController.getBatteryPercentage();
+
+    int batteryPercentage = batteryController.getBatteryPercentage();
+  
+    if (!configController.hasAttemptedMqttConnection()) {
+        if (WiFi.status() == WL_CONNECTED) {
+            ledController.blinkConnecting();
+        } else if (batteryPercentage < 20) {
+            ledController.orange();
+        } else {
+            ledController.green();
+        }
+    } else if (configController.isMqttConnected()) {
+        ledController.blue();
+    } else if (WiFi.status() == WL_CONNECTED) {
+        ledController.blinkConnecting();
+    } else {
+        ledController.green();
+    }
+
+    if (!configController.hasAttemptedMqttConnection()) {
+        return;
+    }
 
     if (configController.consumeCalibrationRequest()) {
         baseline = aController.calibrate();
