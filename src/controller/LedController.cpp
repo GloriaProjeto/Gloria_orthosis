@@ -18,7 +18,7 @@ void LedController::setLed() {
     pinMode(ledModel.getGreen(), OUTPUT);
     pinMode(ledModel.getBlue(), OUTPUT);
 
-    turnOff();
+    // turnOff();
 };
 
 void LedController::turnOff() {

@@ -72,10 +72,6 @@ void loop() {
         ledController.green();
     }
 
-    if (!configController.hasAttemptedMqttConnection()) {
-        return;
-    }
-
     if (configController.consumeCalibrationRequest()) {
         baseline = aController.calibrate();
         Serial.println("Accelerometer calibration complete.");
