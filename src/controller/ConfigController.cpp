@@ -171,8 +171,8 @@ bool ConfigController::publishBattery(int percentage) {
     }
 
     String topic = String(MQTT_USERNAME) + "/battery";
-    String payload = String(percentage, 1);
-    return mqttClient.publish(topic.c_str(), payload.c_str(), true);
+    String payload = String(percentage);
+    return mqttClient.publish(topic.c_str(), payload.c_str(), false);
 }
 
 bool ConfigController::consumeCalibrationRequest() {

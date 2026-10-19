@@ -9,10 +9,11 @@ class BatteryController{
     private:
         BatteryModel model;
         BatterySensor sensor;
-        ConfigController configController;
+        ConfigController* configController = nullptr;
         SerialView view;
 
     public:
         void begin();
+        void setConfigController(ConfigController* controller);
         int getBatteryPercentage();
 };

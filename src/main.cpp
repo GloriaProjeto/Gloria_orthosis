@@ -22,6 +22,7 @@ float weight;
 
 OrthosisStates state = OrthosisStates::IDLE;
 OrthosisStates lastState = OrthosisStates::IDLE;
+unsigned long lastBatteryPublish = 0;
 
 void setup() {
     Serial.begin(115200);
@@ -32,6 +33,7 @@ void setup() {
     configController.begin();
     configController.connect();
 
+    batteryController.setConfigController(&configController);
     batteryController.begin();
 
     jController.begin();
@@ -48,6 +50,11 @@ void loop() {
     configController.update();
 
     int batteryPercentage = batteryController.getBatteryPercentage();
+
+    if (configController.isMqttConnected() && millis() - lastBatteryPublish >= 10000) {
+        lastBatteryPublish = millis();
+        configController.publishBattery(batteryPercentage);
+    }
   
     if (!configController.hasAttemptedMqttConnection()) {
         if (WiFi.status() == WL_CONNECTED) {
