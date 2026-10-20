@@ -12,20 +12,24 @@ void JointsController::begin(){
 }
 
 void JointsController::initialize(){
-    for (int i = joint1.getAngle(); i >= 0; i--){
-        joint1.setAngle(i);
-        delay(10);
-    }
+    // for (int i = joint1.getAngle(); i >= 0; i--){
+    //     joint1.setAngle(i);
+    //     delay(10);
+    // }
 
-    for (int i = joint2.getAngle(); i >= 0; i--){
-        joint2.setAngle(i);
-        delay(10);
-    }
+    // for (int i = joint2.getAngle(); i >= 0; i--){
+    //     joint2.setAngle(i);
+    //     delay(10);
+    // }
 
-    for (int i = joint3.getAngle(); i >= 0; i--){
-        joint3.setAngle(i);
-        delay(10);
-    }    
+    // for (int i = joint3.getAngle(); i >= 0; i--){
+    //     joint3.setAngle(i);
+    //     delay(10);
+    // } 
+    
+    joint1.setAngle(0);
+    joint2.setAngle(0);
+    joint3.setAngle(0);
 }
 
 void JointsController::getFood(){

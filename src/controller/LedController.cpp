@@ -47,8 +47,8 @@ void LedController::green() {
 
 void LedController::orange() {
     digitalWrite(ledModel.getRed(), HIGH);
-    digitalWrite(ledModel.getGreen(), LOW);
-    digitalWrite(ledModel.getBlue(), HIGH);
+    digitalWrite(ledModel.getGreen(), HIGH);
+    digitalWrite(ledModel.getBlue(), LOW);
 };
 
 void LedController::blinkConnecting() {

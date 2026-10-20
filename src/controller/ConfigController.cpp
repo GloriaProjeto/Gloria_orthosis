@@ -153,12 +153,21 @@ void ConfigController::handleSaveWifi(){
 void ConfigController::update(){
     server.handleClient();
 
+    if (WiFi.status() != WL_CONNECTED) {
+        if (!wifiConnectionAttempted || millis() - lastWifiAttempt >= 5000) {
+            wifiConnectionAttempted = true;
+            lastWifiAttempt = millis();
+            connectWifi();
+        }
+        return;
+    }
+
     if (mqttClient.connected()) {
         mqttClient.loop();
         return;
     }
 
-    if (WiFi.status() == WL_CONNECTED && millis() - lastMqttAttempt >= 5000) {
+    if (millis() - lastMqttAttempt >= 5000) {
         lastMqttAttempt = millis();
         mqttConnectionAttempted = true;
         connectMQTT();
@@ -253,6 +262,10 @@ bool ConfigController::connectWifi(){
         return false;
     }
 
+    if (WiFi.status() == WL_CONNECTED) {
+        return true;
+    }
+
     WifiConfig wifiConfig = getWifiConfig();
 
     Serial.print("Connecting to WiFi: ");
@@ -261,21 +274,7 @@ bool ConfigController::connectWifi(){
     WiFi.mode(WIFI_STA);
     WiFi.begin(wifiConfig.ssid.c_str(), wifiConfig.password.c_str());
 
-    for(int i = 0; i < 20 && WiFi.status() != WL_CONNECTED; i++){
-        delay(500);
-        Serial.print(".");
-    }
-
-    if(WiFi.status() == WL_CONNECTED) {
-        Serial.println("\nWiFi connected.");
-        return true;
-    } else {
-        Serial.println("\nFailed to connect to WiFi.");
-
-        startAccessPoint();
-
-        return false;
-    }
+    return false;
 }
 
 bool ConfigController::connectMQTT() {

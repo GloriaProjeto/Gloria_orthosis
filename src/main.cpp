@@ -30,14 +30,13 @@ void setup() {
 
     ledController.setLed();
 
+    jController.begin();
+    jController.initialize();
+
     configController.begin();
-    configController.connect();
 
     batteryController.setConfigController(&configController);
     batteryController.begin();
-
-    jController.begin();
-    jController.initialize();
 
     lcController.begin();
 

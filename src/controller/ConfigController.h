@@ -20,7 +20,9 @@ private:
     static void mqttCallback(char* topic, byte* payload, unsigned int length);
     bool calibrationRequested = false;
     bool mqttConnectionAttempted = false;
+    bool wifiConnectionAttempted = false;
     unsigned long lastMqttAttempt = 0;
+    unsigned long lastWifiAttempt = 0;
 
     WebServer server;
 
